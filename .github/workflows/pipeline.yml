@@ -34,3 +34,4 @@ jobs:
           heroku_email: "1000bei10000@gmail.com"
           healthcheck: "https://pokedex-senbeiman.herokuapp.com/version"
           checkstring: "1"
+          rollbackonhealthcheckfailed: true
