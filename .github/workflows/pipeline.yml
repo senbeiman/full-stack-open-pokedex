@@ -1,9 +1,9 @@
 name: Deployment pipeline
 
 on:
-  # push:
-  #   branches:
-  #     - master
+  push:
+    branches:
+      - master
   pull_request:
     branches: [master]
     types: [opened, synchronize]
@@ -41,7 +41,7 @@ jobs:
           rollbackonhealthcheckfailed: true
       - uses: actions/checkout@v2
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' }}
+        if: github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip')
         uses: anothrNick/github-tag-action@1.33.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
