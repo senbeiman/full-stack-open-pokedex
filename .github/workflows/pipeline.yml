@@ -21,6 +21,7 @@ jobs:
       - name: lint
         run: npm run eslint
       - name: build
+        id: build
         run: npm run build
       # - name: test
       #   run: npm test
@@ -32,6 +33,7 @@ jobs:
       #     wait-on: http://localhost:5000
       - uses: akhileshns/heroku-deploy@v3.8.9
         name: deploy
+        id: deploy
         if: github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip')
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
@@ -56,8 +58,8 @@ jobs:
       #   if: steps.build.outcome != 'success' || steps.deploy.outcome == 'success'
       - name: check
         env:
-          BUILD_OUTCOME: ${{ toJSON(steps.build.outcome) }}
-          DEPLOY_OUTCOME: ${{ toJSON(steps.deploy.outcome) }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
         run: |
           echo "$BUILD_OUTCOME"
           echo "$DEPLOY_OUTCOME"
