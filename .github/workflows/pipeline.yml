@@ -23,14 +23,14 @@ jobs:
       - name: build
         id: build
         run: npm run build
-      # - name: test
-      #   run: npm test
-      # - name: e2e test
-      #   uses: cypress-io/github-action@v2
-      #   with:
-      #     command: npm run test:e2e
-      #     start: npm run start-prod
-      #     wait-on: http://localhost:5000
+      - name: test
+        run: npm test
+      - name: e2e test
+        uses: cypress-io/github-action@v2
+        with:
+          command: npm run test:e2e
+          start: npm run start-prod
+          wait-on: http://localhost:5000
       - uses: akhileshns/heroku-deploy@v3.8.9
         name: deploy
         id: deploy
@@ -49,17 +49,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: "patch"
-      # - uses: 8398a7/action-slack@v3
-      #   with:
-      #     status: ${{ job.status }}
-      #     fields: repo,message,commit,author,took
-      #   env:
-      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
-      #   if: steps.build.outcome != 'success' || steps.deploy.outcome == 'success'
-      - name: check
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,took
         env:
-          BUILD_OUTCOME: ${{ steps.build.outcome }}
-          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
-        run: |
-          echo "$BUILD_OUTCOME"
-          echo "$DEPLOY_OUTCOME"
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} 
+        if: steps.build.outcome != 'success' || steps.deploy.outcome == 'success'
